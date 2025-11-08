@@ -13,7 +13,7 @@ A TypeScript-based Slack bot for automated monitoring and alerts, built with Sla
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 20+
 - Yarn package manager
 - Docker (for local development)
 - MongoDB (local or cloud instance)
@@ -90,26 +90,26 @@ Set these secrets in your GitHub repository:
 - `EC2_USER`: SSH username (usually `ubuntu` for Ubuntu instances)
 - `EC2_SSH_KEY`: Private SSH key for EC2 access
 
+The workflow will automatically build the Docker image on your EC2 instance and deploy it.
+
 #### EC2 Setup
 
 1. Launch an EC2 instance with Ubuntu
-2. Install Docker:
+2. Install Docker and Git:
 
 ```bash
 sudo apt update
-sudo apt install docker.io
+sudo apt install docker.io git
 sudo systemctl start docker
 sudo usermod -aG docker ubuntu
 ```
 
-3. Create environment file on EC2:
-
-```bash
-mkdir -p /home/ubuntu/guardian
-# Upload your .env file to /home/ubuntu/guardian/.env
-```
-
-4. The GitHub Actions workflow will handle deployment automatically on pushes to main/master branch.
+3. Create your `.env` file locally with your actual environment variables
+4. Commit and push the `.env` file to your repository (make sure it's not in `.gitignore` for production)
+5. The GitHub Actions workflow will automatically:
+   - Clone/pull the repository to `/home/${EC2_USER}/guardian/`
+   - Build the Docker image on EC2
+   - Deploy the container using the `.env` file from the repository
 
 ## Slack App Setup
 
